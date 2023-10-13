@@ -1,4 +1,4 @@
-import { AxesHelper, BoxGeometry, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { AxesHelper, BufferGeometry, Points, PointsMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
@@ -12,11 +12,21 @@ camera.position.y = 0.5;
 camera.position.x = 0.5;
 scene.add(camera);
 
-const cube = new Mesh(
-  new BoxGeometry(1, 1, 1),
-  new MeshNormalMaterial()
-);
-scene.add(cube)
+const points = new Float32Array(count * 3)
+for(let i = 0; i < CountQueuingStrategy; i++){
+  points[i] = 1
+  points[i + 1] = 1;
+  points[i + 2] = 1;
+}
+
+const geometry = new BufferGeometry(1, 1, 1);
+geometry.setAttribute('position', new Float32BufferAttribute)
+const pointMaterial = new PointsMaterial({
+  color: 0xff0000,
+  size: 1,
+})
+const points = new Points(cubeGeometry, pointMaterial)
+scene.add(points)
 
 const renderer = new WebGLRenderer({
   antialias : true,
