@@ -1,9 +1,10 @@
-import { AxesHelper, Points, BufferGeometry, Float32BufferAttribute, PointsMaterial, PerspectiveCamera, Scene, WebGLRenderer,  MathUtils, TextureLoader } from "three";
+import { AxesHelper, Points, BufferGeometry, Float32BufferAttribute, PointsMaterial, Clock, Group, PerspectiveCamera, Scene, WebGLRenderer,  MathUtils, TextureLoader } from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import './style.css'
 
 const textureLoader = new TextureLoader()
 const circleTexture = textureLoader.load('/public/cercle.png')
+const alphaMap = textureLoader.load('/public/alphamap.png')
 const scene = new Scene()
 const count = 100
 const distance = 2;
@@ -30,14 +31,19 @@ geometry.setAttribute('color', new Float32BufferAttribute(colors, 3))
 const pointMaterial = new PointsMaterial({
   size: 0.1,
   vertexColors: true,
-  map: circleTexture,
   alphaTest: 0.01,
+  alphaMap: alphaMap,
   transparent: true
 })
 
 const pointsObject = new Points(geometry, pointMaterial)
 
 scene.add(pointsObject)
+
+const group = new Group()
+group.add(pointsObject)
+
+scene.add(group)
 
 const renderer = new WebGLRenderer({
   antialias : true,
@@ -49,11 +55,21 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
+const clock = new Clock()
+let mouseX = 0
+window.addEventListener('mousemove', e => {
+  mouseX = e.clientX
+})
 
 function tick() {
+  const time = clock.getElapsedTime()
+  //group.rotation.Y = time * 0.1
+  //group.rotateY(0.0001 * Math.PI) 
   renderer.render(scene, camera);
   controls.update();
   requestAnimationFrame(tick);
+  const ratio = (mouseX / window.innerWidth -0.5) * 2
+  //group.rotation.y = ratio * Math.PI * 0.1
 }
 
 tick();
